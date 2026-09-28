@@ -41,7 +41,7 @@ function render(data){
   else{let pending=[];const flush=()=>{while(pending.length){addMosaic(container,pending.splice(0,6))}};for(const photo of items){if(photo.width/photo.height>2.5){flush();addMosaic(container,[photo],'panorama')}else pending.push(photo)}flush()}
   section.append(info,container);fragment.append(section);
  }
- document.querySelector('.cover').src=photos[0]?.src||'';const makeSlide=(photo,i)=>{const img=document.createElement('img');img.className='photo-slide';img.src=photo.src;img.alt=photo.caption||`Photo ${i+1} de Cadix`;img.loading='eager';img.decoding='async';return img};photoTrack.replaceChildren(makeSlide(photos.at(-1),photos.length-1),...photos.map(makeSlide),makeSlide(photos[0],0));
+ document.querySelector('.cover').src=photos[0]?.src||'';const makeSlide=(photo,i)=>{const img=document.createElement('img');img.className='photo-slide';img.src=photo.src;img.alt=photo.caption||`Photo ${i+1} de Cadix`;img.loading='eager';img.decoding='async';return img};photoTrack.replaceChildren(makeSlide(photos[photos.length-1],photos.length-1),...photos.map(makeSlide),makeSlide(photos[0],0));
  $('album').replaceChildren(fragment);fitJustifiedRows($('album'));$('total').textContent=`${photos.length} photos`;
  const id=decodeURIComponent(location.hash.slice(1));const found=photos.findIndex(p=>p.id===id);if(found>=0)openPhoto(found);
 }
