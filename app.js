@@ -41,7 +41,7 @@ function render(data){
   else{let pending=[];const flush=()=>{while(pending.length){addMosaic(container,pending.splice(0,6))}};for(const photo of items){if(photo.width/photo.height>2.5){flush();addMosaic(container,[photo],'panorama')}else pending.push(photo)}flush()}
   section.append(info,container);fragment.append(section);
  }
- document.querySelector('.cover').src=photos[0]?.src||'';photoTrack.replaceChildren(...photos.map((photo,i)=>{const img=document.createElement('img');img.className='photo-slide';img.src=photo.src;img.alt=photo.caption||`Photo ${i+1} de Cadix`;img.loading=i<3?'eager':'lazy';img.decoding='async';return img}));
+ document.querySelector('.cover').src=photos[0]?.src||'';photoTrack.replaceChildren(...photos.map((photo,i)=>{const img=document.createElement('img');img.className='photo-slide';img.src=photo.src;img.alt=photo.caption||`Photo ${i+1} de Cadix`;img.loading='eager';img.decoding='async';return img}));
  $('album').replaceChildren(fragment);fitJustifiedRows($('album'));$('total').textContent=`${photos.length} photos`;
  const id=decodeURIComponent(location.hash.slice(1));const found=photos.findIndex(p=>p.id===id);if(found>=0)openPhoto(found);
 }
@@ -51,7 +51,7 @@ function resetZoom(){if(!fullPhoto)return;fullPhoto.style.setProperty('--photo-s
 function fitPhoto(){fullPhoto.classList.add('zoom-settle');resetZoom();fullPhoto.addEventListener('transitionend',()=>fullPhoto.classList.remove('zoom-settle'),{once:true})}
 function updateDetails(p){$('counter').textContent=`${index+1} / ${photos.length}`;$('taken').textContent=takenLabel(p);$('taken').dateTime=p.taken||'';$('caption').textContent=p.caption||'';$('download').href=p.src;$('download').download=p.src.split('/').pop();history.replaceState(null,'','#'+encodeURIComponent(p.id))}
 function activatePhoto(i){index=(i+photos.length)%photos.length;fullPhoto?.classList.remove('is-active');fullPhoto=photoTrack.children[index];fullPhoto.classList.add('is-active');updateDetails(photos[index])}
-function showPhoto(i){activatePhoto(i);resetZoom();setInfoVisible(false);requestAnimationFrame(()=>photoTrack.scrollTo({left:index*photoTrack.clientWidth,behavior:'instant'}))}
+function showPhoto(i){activatePhoto(i);resetZoom();setInfoVisible(false);requestAnimationFrame(()=>{photoTrack.scrollLeft=index*photoTrack.clientWidth})}
 let programmaticScroll=false;
 function changePhoto(direction){stop();const nextIndex=(index+direction+photos.length)%photos.length;programmaticScroll=true;photoTrack.scrollTo({left:nextIndex*photoTrack.clientWidth,behavior:'smooth'});setTimeout(()=>{programmaticScroll=false},350)}
 function openPhoto(i){if(!photos.length)return;lastFocus=document.activeElement;if(!viewer.open){viewer.showModal();document.body.classList.add('modal-open')}showPhoto(i)}
